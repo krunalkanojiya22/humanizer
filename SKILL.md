@@ -1,13 +1,16 @@
 ---
 name: humanizer
-version: 2.5.1
+version: 2.6.0
 description: |
   Remove signs of AI-generated writing from text. Use when editing or reviewing
   text to make it sound more natural and human-written. Based on Wikipedia's
-  comprehensive "Signs of AI writing" guide. Detects and fixes patterns including:
+  comprehensive "Signs of AI writing" guide. Detects and fixes 35 patterns including:
   inflated symbolism, promotional language, superficial -ing analyses, vague
   attributions, em dash overuse, rule of three, AI vocabulary words, passive
-  voice, negative parallelisms, and filler phrases.
+  voice, negative parallelisms, filler phrases, temporal openers, rhetorical
+  questions as transitions, balanced-view theater, meta-commentary on complexity,
+  vacuous list openers, and transition summaries. Includes genre detection,
+  severity triage, and exportable voice profiles.
 license: MIT
 compatibility: claude-code opencode
 allowed-tools:
@@ -49,7 +52,20 @@ If the user provides a writing sample (their own previous writing), analyze it b
 
 2. **Match their voice in the rewrite.** Don't just remove AI patterns - replace them with patterns from the sample. If they write short sentences, don't produce long ones. If they use "stuff" and "things," don't upgrade to "elements" and "components."
 
-3. **When no sample is provided,** fall back to the default behavior (natural, varied, opinionated voice from the PERSONALITY AND SOUL section below).
+3. **Output an explicit voice profile** before rewriting, so the user can reuse it in future sessions without re-uploading the sample:
+
+```
+Voice profile:
+- Sentence length: [short/long/mixed — e.g., "mostly short, occasional long ones for emphasis"]
+- Word register: [casual/formal/technical/mixed]
+- Paragraph openers: [e.g., "jumps straight to the point, no scene-setting"]
+- Punctuation habits: [e.g., "uses parenthetical asides frequently, avoids semicolons"]
+- Transition style: [e.g., "no explicit connectors, just starts the next thought"]
+- Recurring patterns: [e.g., "starts sentences with 'But', uses 'stuff' and 'thing'"]
+- What to avoid: [e.g., "never uses Oxford comma, avoids em dashes"]
+```
+
+4. **When no sample is provided,** fall back to the default behavior (natural, varied, opinionated voice from the PERSONALITY AND SOUL section below).
 
 ### How to provide a sample
 - Inline: "Humanize this text. Here's a sample of my writing for voice matching: [sample]"
@@ -173,7 +189,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 
 ### 7. Overused "AI Vocabulary" Words
 
-**High-frequency AI words:** Actually, additionally, align with, crucial, delve, emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), pivotal, showcase, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
+**High-frequency AI words:** Actually, additionally, align with, comprehensive, crucial, delve, ecosystem (abstract), emphasizing, enduring, enhance, fostering, garner, highlight (verb), interplay, intricate/intricacies, key (adjective), landscape (abstract noun), leverage (verb), optimize, pivotal, robust, scalable, seamless, showcase, streamline, synergy, tapestry (abstract noun), testament, underscore (verb), valuable, vibrant
 
 **Problem:** These words appear far more frequently in post-2023 text. They often co-occur.
 
@@ -461,32 +477,137 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 >
 > When users hit a slow page, they leave.
 
+### 30. Temporal Filler Openers
+
+**Phrases to watch:** In today's world, In the modern era, In recent years, In an age of, In today's fast-paced, Now more than ever, As we navigate, In the current landscape
+
+**Problem:** LLMs open paragraphs with vague temporal framing that sounds profound but says nothing. The sentence that follows is almost always the actual point — start there.
+
+**Before:**
+> In today's fast-paced digital world, businesses must adapt to stay competitive. Now more than ever, customer experience is paramount.
+
+**After:**
+> Businesses that respond to support requests within an hour retain customers at twice the rate of those that don't.
+
+
+### 31. Rhetorical Questions as Transitions
+
+**Problem:** LLMs use rhetorical questions to fake intellectual momentum between paragraphs. "But what does this mean for teams?" / "So how can organizations respond?" — these add a beat of suspense before immediately answering themselves. Rewrite as direct statements.
+
+**Before:**
+> AI tools are changing how developers work. But what does this mean for software teams? How can organizations adapt to this shift?
+
+**After:**
+> AI tools are changing how developers work. Teams that adapt well tend to use them for boilerplate and review every line rather than letting the model make architectural decisions.
+
+
+### 32. Balanced-View Theater
+
+**Phrases to watch:** On one hand... on the other hand..., While some argue... others contend..., Proponents say... critics argue..., There are both advantages and disadvantages
+
+**Problem:** AI always presents exactly two sides with false symmetry, then either picks neither or chooses one at the very end with "ultimately." Real humans have actual opinions and don't structure every nuanced topic as a debate exercise.
+
+**Before:**
+> On one hand, remote work offers flexibility and reduces commute times. On the other hand, some argue it can hinder collaboration. Ultimately, the right approach depends on the team.
+
+**After:**
+> Remote work cuts commute time, which most people value. The collaboration problem is real but usually overstated — most teams I've seen lose less to remote friction than to bad meeting culture.
+
+
+### 33. Meta-Commentary on Complexity
+
+**Phrases to watch:** This is a complex topic, There are many factors to consider, It's important to understand, This requires careful consideration, The answer is nuanced, It's worth noting that
+
+**Problem:** LLMs preface content by announcing that the topic is complicated instead of just engaging with it. If a topic is complex, show that through the actual content.
+
+**Before:**
+> Climate change is a complex topic with many factors to consider. It's important to understand that there are no easy answers.
+
+**After:**
+> Climate change is hard to act on politically because the costs are immediate and concentrated (higher energy prices, stranded assets) while the benefits are diffuse and delayed.
+
+
+### 34. Vacuous List Openers
+
+**Phrases to watch:** There are several key factors:, Here are the main points:, Consider the following:, The following are..., Key takeaways include:, There are X things to know:
+
+**Problem:** LLMs announce the list is about to start instead of starting it. The opener adds a full sentence of zero information.
+
+**Before:**
+> There are several key factors that contribute to employee retention. Consider the following:
+> - Competitive compensation
+> - Growth opportunities
+> - Strong management
+
+**After:**
+> Employee retention comes down to three things: competitive pay, visible growth paths, and managers who don't make people miserable.
+
+
+### 35. Transition Summaries
+
+**Phrases to watch:** In summary, To summarize, As we have seen, As discussed above, Having explored, This shows us that, This demonstrates that, Taken together
+
+**Problem:** LLMs insert mini-summaries mid-document or at section ends that restate what was just said. In a well-written piece, the content speaks for itself. Remove these and let the next point begin.
+
+**Before:**
+> In summary, the data shows that user engagement dropped after the redesign. As we have seen, the causes are complex. Having explored these factors, we can now turn to potential solutions.
+
+**After:**
+> User engagement dropped after the redesign. The causes point in one direction: solutions.
+
 ---
 
 ## Process
 
+### Step 0: Detect genre and calibrate
+
+Before rewriting, identify what kind of text this is:
+
+- **Casual / personal** (blog, newsletter, social post): full personality, opinions, "I", humor allowed
+- **Technical** (docs, code writeups, engineering posts): cut AI cruft but keep precision; don't add opinions where neutrality is warranted; keep lists if they're genuinely list-like
+- **Formal / professional** (reports, proposals, business writing): neutral tone is fine; focus on cutting filler and inflation, not injecting personality
+- **Academic**: hedging is often legitimate here; don't aggressively strip qualifiers
+
+Apply the patterns appropriately for the genre. A legal brief should keep formal hedging. A startup blog post should not have bullet points for everything.
+
+### Step 1: Severity triage
+
+Scan the text and identify the top 3–5 worst offenders — the patterns most obviously signaling AI generation. List them briefly before rewriting. This helps focus the rewrite on what matters most rather than doing cosmetic touch-ups everywhere.
+
+Example triage output:
+> - Heavy em dash overuse (9 instances)
+> - Significance inflation throughout ("pivotal", "testament", "underscores")
+> - Sycophantic opener ("Great question! I hope this helps!")
+> - Rule of three forced in every paragraph
+> - Generic positive conclusion
+
+### Step 2: First-pass rewrite
+
 1. Read the input text carefully
-2. Identify all instances of the patterns above
-3. Rewrite each problematic section
-4. Ensure the revised text:
+2. Fix all pattern instances, prioritizing the top offenders from the triage
+3. Ensure the revised text:
    - Sounds natural when read aloud
-   - Varies sentence structure naturally
+   - Varies sentence structure
    - Uses specific details over vague claims
-   - Maintains appropriate tone for context
+   - Matches the genre (see Step 0)
    - Uses simple constructions (is/are/has) where appropriate
-5. Present a draft humanized version
-6. Prompt: "What makes the below so obviously AI generated?"
-7. Answer briefly with the remaining tells (if any)
-8. Prompt: "Now make it not obviously AI generated."
-9. Present the final version (revised after the audit)
+
+### Step 3: Anti-AI audit
+
+4. Present the draft
+5. Prompt: "What makes the below so obviously AI generated?"
+6. Answer briefly with remaining tells (if any)
+7. Prompt: "Now make it not obviously AI generated."
+8. Present the final version
 
 ## Output Format
 
 Provide:
-1. Draft rewrite
-2. "What makes the below so obviously AI generated?" (brief bullets)
-3. Final rewrite
-4. A brief summary of changes made (optional, if helpful)
+1. **Severity triage** (top 3–5 worst patterns, one line each)
+2. **Draft rewrite**
+3. **"What makes this still AI-sounding?"** (brief bullets)
+4. **Final rewrite**
+5. **Changes summary** (optional, if the user would find it useful)
 
 
 ## Full Example

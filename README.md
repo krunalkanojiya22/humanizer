@@ -10,7 +10,7 @@ Clone directly into Claude Code's skills directory:
 
 ```bash
 mkdir -p ~/.claude/skills
-git clone https://github.com/blader/humanizer.git ~/.claude/skills/humanizer
+git clone https://github.com/krunalkanojiya22/humanizer.git ~/.claude/skills/humanizer
 ```
 
 Or copy the skill file manually if you already have this repo cloned:
@@ -26,7 +26,7 @@ Clone directly into OpenCode's skills directory:
 
 ```bash
 mkdir -p ~/.config/opencode/skills
-git clone https://github.com/blader/humanizer.git ~/.config/opencode/skills/humanizer
+git clone https://github.com/krunalkanojiya22/humanizer.git ~/.config/opencode/skills/humanizer
 ```
 
 Or copy the skill file manually if you already have this repo cloned:
@@ -76,19 +76,19 @@ Now humanize this text:
 [paste AI text to humanize]
 ```
 
-The skill will analyze your sentence rhythm, word choices, and quirks, then apply them to the rewrite instead of producing generic "clean" output.
+The skill will analyze your sentence rhythm, word choices, and quirks, then apply them to the rewrite instead of producing generic "clean" output. It also outputs an exportable **voice profile** you can paste into future sessions without re-uploading the sample.
 
 ## Overview
 
 Based on [Wikipedia's "Signs of AI writing"](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) guide, maintained by WikiProject AI Cleanup. This comprehensive guide comes from observations of thousands of instances of AI-generated text.
 
-The skill also includes a final "obviously AI generated" audit pass and a second rewrite, to catch lingering AI-isms in the first draft.
+The skill also includes genre detection, a severity triage step, a final "obviously AI generated" audit pass, and a second rewrite to catch lingering AI-isms in the first draft.
 
 ### Key Insight from Wikipedia
 
 > "LLMs use statistical algorithms to guess what should come next. The result tends toward the most statistically likely result that applies to the widest variety of cases."
 
-## 29 Patterns Detected (with Before/After Examples)
+## 35 Patterns Detected (with Before/After Examples)
 
 ### Content Patterns
 
@@ -105,7 +105,7 @@ The skill also includes a final "obviously AI generated" audit pass and a second
 
 | # | Pattern | Before | After |
 |---|---------|--------|-------|
-| 7 | **AI vocabulary** | "Actually... additionally... testament... landscape... showcasing" | "also... remain common" |
+| 7 | **AI vocabulary** | "leverage... robust... seamless... ecosystem... optimize... streamline... testament... landscape" | Direct, plain alternatives |
 | 8 | **Copula avoidance** | "serves as... features... boasts" | "is... has" |
 | 9 | **Negative parallelisms / tailing negations** | "It's not just X, it's Y", "..., no guessing" | State the point directly |
 | 10 | **Rule of three** | "innovation, inspiration, and insights" | Use natural number of items |
@@ -143,6 +143,12 @@ The skill also includes a final "obviously AI generated" audit pass and a second
 | 23 | **Filler phrases** | "In order to", "Due to the fact that" | "To", "Because" |
 | 24 | **Excessive hedging** | "could potentially possibly" | "may" |
 | 25 | **Generic conclusions** | "The future looks bright" | Specific plans or facts |
+| 30 | **Temporal filler openers** | "In today's rapidly evolving landscape..." | Start with the actual point |
+| 31 | **Rhetorical questions as transitions** | "But what does this mean for teams?" | State the answer directly |
+| 32 | **Balanced-view theater** | "On one hand... On the other hand... Ultimately..." | Take an actual position |
+| 33 | **Meta-commentary on complexity** | "This is a complex topic with many nuances" | Show complexity through content |
+| 34 | **Vacuous list openers** | "Consider the following:", "There are several key factors:" | Start the list |
+| 35 | **Transition summaries** | "In summary... As we have seen... Having explored..." | Let content speak for itself |
 
 ## Full Example
 
@@ -179,6 +185,7 @@ The skill also includes a final "obviously AI generated" audit pass and a second
 
 ## Version History
 
+- **2.6.0** - Added 6 new patterns (temporal openers, rhetorical transitions, balanced-view theater, meta-commentary, vacuous list openers, transition summaries); expanded AI vocabulary list; added genre detection, severity triage, and exportable voice profiles to the process
 - **2.5.1** - Added a passive-voice / subjectless-fragment rule, raising the total to 29 patterns
 - **2.5.0** - Added patterns for persuasive framing, signposting, and fragmented headers; expanded negative parallelisms to cover tailing negations; tightened wording around em dash overuse; fixed frontmatter wording to use "filler phrases"
 - **2.4.0** - Added voice calibration: match the user's personal writing style from samples
